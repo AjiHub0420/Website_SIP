@@ -37,16 +37,16 @@ function App() {
       {isLoading ? (
         <Loading />
       ) : (
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<BaseLayout />}>
-            <Route index element={<Map />} />
-            <Route path='about' element={<About />} />
-            <Route path='contact' element={<Contact />} />
-            <Route path='profile' element={<Profile />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<BaseLayout />}>
+              <Route index element={<Map />} />
+              <Route path='about' element={<About />} />
+              <Route path='contact' element={<Contact />} />
+              <Route path='profile' element={<Profile />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
       )}
     </div>
   );
