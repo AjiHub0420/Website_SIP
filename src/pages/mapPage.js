@@ -1,6 +1,8 @@
+import Frame from "../components/mapFramer";
+
 const Map = () => {
     return (<>
-        <h1>Halaman Peta</h1>
+        <Frame />
     </>)
 }
 
