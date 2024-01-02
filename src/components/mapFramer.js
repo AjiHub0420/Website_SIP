@@ -29,7 +29,7 @@ const Frame = () => {
         ],
 
     };
-    return (<div className="PLNDetail">
+    return (<div className="PLNDetail ps-5">
         <h4>Data Kota Semarang</h4>
         <hr></hr>
         <p>Tingkat Pemadaman Listrik</p>
