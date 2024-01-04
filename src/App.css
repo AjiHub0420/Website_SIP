@@ -14,16 +14,12 @@
 }
 
 .aboutInfo h4 {
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 600;
     font-size: 45px;
     color: #FFFFFF;
 }
 
 .aboutInfo p {
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 500;
     font-size: 24px;
     line-height: 167%;
@@ -40,9 +36,6 @@
 }
 
 .PLNDetail h4 {
-
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 600;
     font-size: 40px;
     line-height: 48px;
@@ -63,9 +56,6 @@
 }
 
 .PLNDetail p {
-
-    font-family: 'Poppins';
-    font-style: normal;
     font-weight: 400;
     font-size: 28px;
     line-height: 42px;
@@ -95,8 +85,6 @@
 
 .cardPLN p {
     /* Rumah Terdampak Pemadaman Bulan ini */
-    font-family: 'Poppins';
-    font-style: normal;
     font-weight: 500;
     font-size: 20px;
     line-height: 30px;
@@ -121,7 +109,7 @@
 .cardPLN img {
     width: 60px;
     height: 60px;
-    margin-left: 100px;
+    margin-left: 65px;
 }
 
 .cardPLN ul {

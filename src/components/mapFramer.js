@@ -3,13 +3,21 @@ import Chart from 'chart.js/auto';
 import flash from '../images/flash.png';
 import file_text from '../images/file-text.png';
 import home from '../images/home.png';
-const Frame = () => {
+import { useState } from "react";
+import './framer.css';
+
+const Frame = ({selectedData}) => {
+    const [isPLNVisible, setPLNVisible] = useState(true);
+
+    const togglePLNVisibility = () => {
+      setPLNVisible(!isPLNVisible);
+    };
     const dataPadam = {
         labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
         datasets: [
             {
                 label: "Tingkat Pemadaman Listrik",
-                data: [20, 45, 30, 95, 60, 10, 75, 50, 60, 30, 10, 20],
+                data: selectedData ? selectedData.pemadaman_bulanan : [],
                 fill: true,
                 backgroundColor: "rgba(45,173,255,0.15)",
                 pointBackgroundColor: "rgba(45,173,255,0.15)",
@@ -19,7 +27,7 @@ const Frame = () => {
     };
     const dataAkibat = {
         datasets: [{
-            data: [25, 25, 50],
+            data: selectedData ? selectedData.info_pln : [],
             backgroundColor: ['#ECC600', '#13EC00', '#008BE4'],
         }],
         labels: [
@@ -29,8 +37,13 @@ const Frame = () => {
         ],
 
     };
-    return (<div className="PLNDetail ps-5">
-        <h4>Data Kota Semarang</h4>
+
+    const locations = selectedData ? selectedData.kecamatan_padam : [];
+
+    return (
+    <div className={`PLNDetail ps-5 position-absolute ${isPLNVisible ? 'visible' : 'hidden'}`} style={{zIndex: 1000, right: 0, overflowY: 'scroll', height: 'inherit'}}>
+        <div className={`toggle-button ${isPLNVisible ? 'active-ai' : ''}`} onClick={togglePLNVisibility}></div>
+        <h4>Data {selectedData ? selectedData.kota_kab : 'kota'}</h4>
         <hr></hr>
         <p>Tingkat Pemadaman Listrik</p>
         <div className="chartPLN">
@@ -52,7 +65,7 @@ const Frame = () => {
                 <p>  Rumah Terdampak Pemadaman Bulan ini</p>
                 <div className="d-flex flex-row">
 
-                    <span>54</span>
+                    <span>{selectedData ? selectedData.rumah_pemadaman : 0}</span>
                     <img src={flash} alt="tidak ada foto" />
                 </div>
             </div>
@@ -60,7 +73,7 @@ const Frame = () => {
                 <p>  Aduan Pemadaman Listrik Bulan Ini</p>
                 <div className="d-flex flex-row">
 
-                    <span>30</span>
+                    <span>{selectedData ? selectedData.aduan : 0}</span>
                     <img src={file_text} alt="tidak ada foto" />
                 </div>
             </div>
@@ -68,18 +81,16 @@ const Frame = () => {
                 <p>  Rata-rata Rumah Padam Listrik</p>
                 <div className="d-flex flex-row">
 
-                    <span>25</span>
+                    <span>{selectedData ? selectedData.rata_rata : 0}</span>
                     <img src={home} alt="tidak ada foto" />
                 </div>
             </div>
             <div className="cardPLN">
                 <p>Kecamatan Yang Sering Terdampak Padam Listrik</p>
                 <ul>
-                    <li>Ngaliyan</li>
-                    <li>Pedurungan</li>
-                    <li>Banyumanik</li>
-                    <li>Candisar</li>
-                    <li>Gayamsari</li>
+                    {locations.map((location, index) => (
+                        <li key={index}>{location}</li>
+                    ))}
                 </ul>
             </div>
         </div>
@@ -87,7 +98,8 @@ const Frame = () => {
             <Doughnut data={dataAkibat} />
         </div>
 
-    </div>)
+    </div>
+    )
 }
 
 export default Frame;
