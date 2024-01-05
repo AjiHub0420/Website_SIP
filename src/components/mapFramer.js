@@ -6,7 +6,7 @@ import home from '../images/home.png';
 import { useState } from "react";
 import './framer.css';
 
-const Frame = ({selectedData}) => {
+const Frame = ({selectedData, ZoomLevelValue}) => {
     const [isPLNVisible, setPLNVisible] = useState(true);
 
     const togglePLNVisibility = () => {
@@ -43,7 +43,7 @@ const Frame = ({selectedData}) => {
     return (
     <div className={`PLNDetail ps-5 position-absolute ${isPLNVisible ? 'visible' : 'hidden'}`} style={{zIndex: 1000, right: 0, overflowY: 'scroll', height: 'inherit'}}>
         <div className={`toggle-button ${isPLNVisible ? 'active-ai' : ''}`} onClick={togglePLNVisibility}></div>
-        <h4>Data {selectedData ? selectedData.kota_kab : 'kota'}</h4>
+        <h4>Data {selectedData && ZoomLevelValue <= 12 ? selectedData.kota_kab : selectedData?.kec}</h4>
         <hr></hr>
         <p>Tingkat Pemadaman Listrik</p>
         <div className="chartPLN">
@@ -62,36 +62,43 @@ const Frame = ({selectedData}) => {
         }}></hr>
         <div className="chartInfo">
             <div className="cardPLN">
-                <p>  Rumah Terdampak Pemadaman Bulan ini</p>
+                <p>{ZoomLevelValue <= 12 ? 'Rumah Terdampak Pemadaman Bulan ini' : 'Rumah Padam Listrik Saat Ini'}</p>
                 <div className="d-flex flex-row">
 
-                    <span>{selectedData ? selectedData.rumah_pemadaman : 0}</span>
+                    <span>{selectedData && ZoomLevelValue <= 12 ? selectedData.rumah_pemadaman : selectedData?.rumah_padam}</span>
                     <img src={flash} alt="tidak ada foto" />
                 </div>
             </div>
             <div className="cardPLN">
-                <p>  Aduan Pemadaman Listrik Bulan Ini</p>
+                <p>{ZoomLevelValue <= 12 ? 'Aduan Pemadaman Listrik Bulan Ini' : 'Rumah Terakumulasi Padam Listrik'}</p>
                 <div className="d-flex flex-row">
 
-                    <span>{selectedData ? selectedData.aduan : 0}</span>
-                    <img src={file_text} alt="tidak ada foto" />
+                    <span>{selectedData && ZoomLevelValue <= 12 ? selectedData.aduan : selectedData?.rumah_akumulasi}</span>
+                    <img src={ZoomLevelValue <= 12 ? file_text : flash} alt="tidak ada foto" />
                 </div>
             </div>
             <div className="cardPLN">
-                <p>  Rata-rata Rumah Padam Listrik</p>
+                <p>{ZoomLevelValue <= 12 ? 'Rata-rata Rumah Padam Listrik' : 'Total Rumah Mengalami Pemadaman Listrik'}</p>
                 <div className="d-flex flex-row">
 
-                    <span>{selectedData ? selectedData.rata_rata : 0}</span>
+                    <span>{selectedData && ZoomLevelValue <= 12 ? selectedData.rata_rata : selectedData?.total_rumah_padam}</span>
                     <img src={home} alt="tidak ada foto" />
                 </div>
             </div>
             <div className="cardPLN">
-                <p>Kecamatan Yang Sering Terdampak Padam Listrik</p>
-                <ul>
-                    {locations.map((location, index) => (
-                        <li key={index}>{location}</li>
-                    ))}
-                </ul>
+                <p>{ZoomLevelValue <= 12 ? 'Kecamatan Yang Sering Terdampak Padam Listrik' : 'Total Pemadaman yang Terjadi Pada Bulan ini'}</p>
+                {ZoomLevelValue <= 12 ? (
+                    <ul>
+                        {locations.map((location, index) => (
+                            <li key={index}>{location}</li>
+                        ))}
+                    </ul>
+                ) : (
+                    <div className="d-flex flex-row">
+                        <span>{selectedData ? selectedData.total_pemadaman_bulanan : 0}</span>
+                        <img src={flash} alt="tidak ada foto" />
+                    </div>
+                )}
             </div>
         </div>
         <div className="chartAkibat d-flex flex-row">

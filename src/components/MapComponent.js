@@ -1,5 +1,5 @@
-import { MapContainer, Marker, Popup, TileLayer, GeoJSON, useMapEvents} from 'react-leaflet';
-import React, { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, GeoJSON, useMapEvents, Circle, CircleMarker} from 'react-leaflet';
+import React, { useEffect, useState } from 'react';
 import L from 'leaflet';
 import Frame from './mapFramer';
 import customIconMark from '../images/markPemadaman.png';
@@ -7,11 +7,16 @@ import "../pages/map.css";
 import { jawaTengahGeoJSON } from "../Data/long_latProvince";
 import { markerPemadaman } from '../Data/markerPemadaman';
 import { kotaKabJawaTengah } from '../Data/long_latKabKot';
+import { spesificMarkerPemadaman } from "../Data/spesificMarkerPemadaman";
 import ZoomLevelComponent from './getZoomLevel';
 
 const MapComponent = ({ selectedMenu }) => {
     const [selectedData, setSelectedData] = useState(null);
-
+    const [ZoomValue, setZoomValue] = useState(9);
+    const fillBlueOptions = { fillColor: 'blue' }
+    useEffect(() => {
+      console.log(ZoomValue);
+    });
     const handleMarkerPopupClick = (data) => {
         setSelectedData(data);
     };
@@ -47,8 +52,8 @@ const MapComponent = ({ selectedMenu }) => {
 
     return (
         <div className="map">
-      <MapContainer center={[-7.150975, 110.1402594]} scrollWheelZoom={false} zoom={9} className='position-relative' >
-        <ZoomLevelComponent />
+      <MapContainer center={[-7.150975, 110.1402594]} scrollWheelZoom={false} zoom={ZoomValue} className='position-relative' >
+        <ZoomLevelComponent setZoomValue={setZoomValue}>
         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <GeoJSON data={jawaTengahGeoJSON} style={{ fillColor: 'green', weight: 2, color: 'black' }}>
           {jawaTengahGeoJSON.features.map((feature, index) => (
@@ -64,7 +69,7 @@ const MapComponent = ({ selectedMenu }) => {
         </GeoJSON>
         <GeoJSON data={kotaKabJawaTengah} onEachFeature={onEachFeature} />
         {markerPemadaman.features.map((feature) => {
-          const shouldShowMarker = selectedMenu === 'pemadaman';
+          const shouldShowMarker = ZoomValue <= 12 && selectedMenu === 'pemadaman';
           return shouldShowMarker ? (
             <Marker key={feature.properties.ID} position={[
               feature.geometry.coordinates[1],
@@ -86,7 +91,30 @@ const MapComponent = ({ selectedMenu }) => {
             </Marker>
           ) : null;
         })}
-        <Frame selectedData={selectedData} />
+        {spesificMarkerPemadaman.features.map((feature) => {
+          const showSpesificMark = ZoomValue > 12 && selectedMenu === 'pemadaman';
+          return showSpesificMark ? (
+                <CircleMarker             
+                  key={feature.properties.ID}
+                  center={feature.geometry.coordinates}
+                  radius={feature.geometry.radius}
+                  pathOptions={fillBlueOptions}
+                  eventHandlers={{ click: () => {
+                    handleMarkerPopupClick(feature.info)
+                  }, 
+                }}>
+                    <Popup>
+                      <div>
+                        <p>Kab/Kot: {feature.properties.NAME1}</p>
+                        <p>Kecamatan: {feature.properties.NAME2}</p>
+                        <p>Penyebab: {feature.properties.DESCRIPTION}</p>
+                      </div>
+                    </Popup>
+                </CircleMarker>
+          ) : null;
+        })}
+        <Frame selectedData={selectedData} ZoomLevelValue={ZoomValue}/>
+        </ZoomLevelComponent>
       </MapContainer>
     </div>
     )
